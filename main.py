@@ -28,9 +28,19 @@ with mp_hand.Hands(min_detection_confidence=0.5, min_tracking_confidence=0.5) as
                 #height, width, _ = frame.shape
 
                 if handedness.classification[0].label == 'Left':
-
+                    
+                    screen_w,screen_h = pyautogui.size()
+                    landmark7 = hand_landmark.landmark[7]
                     landmark8 = hand_landmark.landmark[8]
-                    pyautogui.moveTo(int(landmark8.x * 1366),int(landmark8.y * 768),duration=0.1)
+                    delta_z = landmark7.z - landmark8.z
+                    delta_x = landmark7.x - landmark8.x
+                    delta_y = landmark7.y - landmark8.y
+                    r_x = delta_x / delta_z
+                    r_y = delta_y / delta_z
+                    target_x = landmark8.x + (r_x * landmark8.z)
+                    target_y = landmark8.y + (r_y * landmark8.z)
+                    # print(f"Target: ({target_x}, {target_y})")
+                    pyautogui.moveTo(int(target_x * screen_w),int(target_y * screen_h * 0.5),duration=0.1)
 
                 else:
 
